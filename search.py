@@ -90,7 +90,8 @@ def depthFirstSearch(problem):
     dataStructure.push(consideredNodeCoord)
 
     actions = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
-   
+    
+    print "The List of Actions: [%s]" % " ,".join(actions)  
     return actions
 
 def breadthFirstSearch(problem):
