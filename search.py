@@ -121,16 +121,16 @@ def depthFirstSearch(problem):
         else:
             closedSet.add(consideredNodeCoord)
 
-        if considerNodeDir == "North":
+        if consideredNodeDir == "North":
             actions.append(n)
-        elif considerNodeDir == "South":
+        elif consideredNodeDir == "South":
             actions.append(s)
-        elif considerNodeDir == "West":
+        elif consideredNodeDir == "West":
             actions.append(w)
-        elif considerNodeDir == "East":
+        elif consideredNodeDir == "East":
             actions.append(e)
         else:
-            raise Exception("Unrecognized expression for direction: " + considerNodeDir)
+            raise Exception("Unrecognized expression for direction: " + consideredNodeDir)
         
     return actions
 
