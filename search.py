@@ -97,37 +97,40 @@ def depthFirstSearch(problem):
     dataStructure       = util.Stack()
     actions             = []
     
-    consideredNode      = problem.startState
-    dataStructure.push(consideredNode)
+    consideredNodeCoord      = problem.startState
+    dataStructure.push(consideredNodeCoord)
 
-    while not problem.isGoalState(consideredNode) and not dataStructure.isEmpty():
-        if not problem.getSuccessors(consideredNode):
+    while not problem.isGoalState(consideredNodeCoord) and not dataStructure.isEmpty():
+        if not problem.getSuccessors(consideredNodeCoord):
             dataStructure.pop()
             actions.pop()
             next
         
-        for node in problem.getSuccessors(consideredNode):
+        for node in problem.getSuccessors(consideredNodeCoord):
             dataStructure.push(node)
 
-        consideredNode = dataStructure.pop()
+        consideredNode      = dataStructure.pop()
+        consideredNodeCoord = consideredNode[nodeLocationIndex]
+        consideredNodeDir   = consideredNode[nodeArcDirectionIndex]
+
         print "Considering Node (%s)\n" % (" ,".join(map(str, consideredNode[nodeLocationIndex])))
         
-        if consideredNode in closedSet:
+        if consideredNodeCoord in closedSet:
             dataStructure.pop()
             next
         else:
-            closedSet.add(consideredNode)
+            closedSet.add(consideredNodeCoord)
 
-        if consideredNode[nodeArcDirectionIndex] == "North":
+        if considerNodeDir == "North":
             actions.append(n)
-        elif consideredNode[nodeArcDirectionIndex] == "South":
+        elif considerNodeDir == "South":
             actions.append(s)
-        elif consideredNode[nodeArcDirectionIndex] == "West":
+        elif considerNodeDir == "West":
             actions.append(w)
-        elif consideredNode[nodeArcDirectionIndex] == "East":
+        elif considerNodeDir == "East":
             actions.append(e)
         else:
-            raise Exception("Unrecognized expression for direction: " + consideredNode[nodeArcDirectionIndex])
+            raise Exception("Unrecognized expression for direction: " + considerNodeDir)
         
     return actions
 
