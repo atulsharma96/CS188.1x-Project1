@@ -82,17 +82,6 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
    
-    from game import Directions
-
-    s = Directions.SOUTH
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
-
-    nodeLocationIndex       = 0
-    nodeArcDirectionIndex   = 1
-    nodeArcCostIndex        = 2 
-
     closedSet           = set()
     dataStructure       = util.Stack()
     actions             = []
@@ -100,38 +89,8 @@ def depthFirstSearch(problem):
     consideredNodeCoord      = problem.startState
     dataStructure.push(consideredNodeCoord)
 
-    while not problem.isGoalState(consideredNodeCoord) and not dataStructure.isEmpty():
-        if not problem.getSuccessors(consideredNodeCoord):
-            dataStructure.pop()
-            actions.pop()
-            next
-        
-        for node in problem.getSuccessors(consideredNodeCoord):
-            dataStructure.push(node)
-
-        consideredNode      = dataStructure.pop()
-        consideredNodeCoord = consideredNode[nodeLocationIndex]
-        consideredNodeDir   = consideredNode[nodeArcDirectionIndex]
-
-        print "Considering Node (%s)\n" % (" ,".join(map(str, consideredNode[nodeLocationIndex])))
-        
-        if consideredNodeCoord in closedSet:
-            dataStructure.pop()
-            next
-        else:
-            closedSet.add(consideredNodeCoord)
-
-        if consideredNodeDir == "North":
-            actions.append(n)
-        elif consideredNodeDir == "South":
-            actions.append(s)
-        elif consideredNodeDir == "West":
-            actions.append(w)
-        elif consideredNodeDir == "East":
-            actions.append(e)
-        else:
-            raise Exception("Unrecognized expression for direction: " + consideredNodeDir)
-        
+    actions = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
+   
     return actions
 
 def breadthFirstSearch(problem):
@@ -158,6 +117,62 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
+def searchHelperFunction(problem, nodeCoordinates, dataStructure=utils.Stack(), path=[], closedSet=None):
+    from game import Directions
+
+    s = Directions.SOUTH
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+    
+    nodeLocationIndex       = 0
+    nodeArcDirectionIndex   = 1
+    nodeArcCostIndex        = 2 
+
+    if problem is None:
+        return []
+
+    if problem.isGoalState(consideredNodeCoord):
+        return path
+
+    if dataStructure.isEmpty():
+        return []
+
+    if closedSet is not None and nodeCoordinates in closedSet:
+        return path
+    
+    successors = problem.getSuccessors(consideredNodeCoord)
+    if not successors:
+        path.pop()
+        return path
+
+    nodesThisLevel = len(successors)
+    for node in successors:
+        dataStructure.push(node)
+    
+    while nodesThisLevel > 0 
+        destNode = dataStructure.pop()
+        destNodeCord = destNode[nodeLocationIndex]
+        consideredNodeDir = destNode[nodeArcDirectionIndex]
+
+        if consideredNodeDir == "North":
+            actions.append(n)
+        elif consideredNodeDir == "South":
+            actions.append(s)
+        elif consideredNodeDir == "West":
+            actions.append(w)
+        elif consideredNodeDir == "East":
+            actions.append(e)
+        else:
+            raise Exception("Unrecognized expression for direction: " + consideredNodeDir)
+     
+        print "Considering Node (%s)\n" % (" ,".join(map(str, destNode[nodeLocationIndex])))
+
+        path = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
+
+        closedSet.add(destNode[nodeLocationIndex])
+        nodesThisLevel -= 1
+    return path
 
 # Abbreviations
 bfs = breadthFirstSearch
