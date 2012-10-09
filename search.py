@@ -86,7 +86,7 @@ def depthFirstSearch(problem):
     dataStructure       = util.Stack()
     actions             = []
     
-    consideredNodeCoord      = problem.startState
+    consideredNodeCoord = problem.startState
     dataStructure.push(consideredNodeCoord)
 
     actions = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
@@ -117,7 +117,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def searchHelperFunction(problem, nodeCoordinates, dataStructure=utils.Stack(), path=[], closedSet=None):
+def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), path=[], closedSet=None):
     from game import Directions
 
     s = Directions.SOUTH
@@ -132,16 +132,13 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=utils.Stack(), 
     if problem is None:
         return []
 
-    if problem.isGoalState(consideredNodeCoord):
+    if problem.isGoalState(nodeCoordinates):
         return path
 
     if dataStructure.isEmpty():
-        return []
-
-    if closedSet is not None and nodeCoordinates in closedSet:
-        return path
+        return []    
     
-    successors = problem.getSuccessors(consideredNodeCoord)
+    successors = problem.getSuccessors(nodeCoordinates)
     if not successors:
         path.pop()
         return path
@@ -155,22 +152,26 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=utils.Stack(), 
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
 
+        if closedSet is not None and destNodeCord in closedSet:
+            nodesThisLevel -= 1
+            continue
+
         if consideredNodeDir == "North":
-            actions.append(n)
+            path.append(n)
         elif consideredNodeDir == "South":
-            actions.append(s)
+            path.append(s)
         elif consideredNodeDir == "West":
-            actions.append(w)
+            path.append(w)
         elif consideredNodeDir == "East":
-            actions.append(e)
+            path.append(e)
         else:
             raise Exception("Unrecognized expression for direction: " + consideredNodeDir)
      
-        print "Considering Node (%s)\n" % (" ,".join(map(str, destNode[nodeLocationIndex])))
-
-        path = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
+        print "Considering Node (%s)\n" % (" ,".join(map(str, destNode[nodeLocationIndex]))) 
 
         closedSet.add(destNode[nodeLocationIndex])
+        path = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
+        
         nodesThisLevel -= 1
     return path
 
