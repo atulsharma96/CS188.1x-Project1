@@ -96,8 +96,10 @@ def depthFirstSearch(problem):
     closedSet           = set()
     dataStructure       = util.Stack()
     actions             = []
-    consideredNode      = problem.startState
     
+    consideredNode      = problem.startState
+    dataStructure.push(consideredNode)
+
     while not problem.isGoalState(consideredNode) and not dataStructure.isEmpty():
         if not problem.getSuccessors(consideredNode):
             dataStructure.pop()
@@ -113,7 +115,7 @@ def depthFirstSearch(problem):
             dataStructure.pop()
             next
         else:
-            closedSet.push(consideredNode)
+            closedSet.add(consideredNode)
 
         if consideredNode[nodeArcDirectionIndex] == "NORTH":
             actions.append(n)
