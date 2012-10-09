@@ -110,6 +110,7 @@ def depthFirstSearch(problem):
             dataStructure.push(node)
 
         consideredNode = dataStructure.pop()
+        print "Considering Node (%s)\n" % (" ,".join(map(str, consideredNode[nodeLocationIndex])))
         
         if consideredNode in closedSet:
             dataStructure.pop()
