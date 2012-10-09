@@ -150,7 +150,7 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=utils.Stack(), 
     for node in successors:
         dataStructure.push(node)
     
-    while nodesThisLevel > 0 
+    while nodesThisLevel > 0: 
         destNode = dataStructure.pop()
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
