@@ -56,7 +56,6 @@ class SearchProblem:
         """
         util.raiseNotDefined()
 
-
 def tinyMazeSearch(problem):
     """
     Returns a sequence of moves that solves tinyMaze.  For any other
@@ -82,7 +81,52 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+   
+    from Game import Directions
+
+    s = Directions.SOUTH
+    w = Directions.WEST
+    n = Directions.NORTH
+    e = Directions.EAST
+
+    nodeLocationIndex       = 0
+    nodeArcDirectionIndex   = 1
+    nodeArcCostIndex        = 2 
+
+    closedSet = set()
+    dataStructure = util.Stack()
+    actions = []
+    consideredNode = problem.startState()
+    
+    while not problem.isGoalState(considerdNode) and not dataStructure.isEmpty():
+        if not problem.getSuccessors(consideredNode):
+            dataStructure.pop()
+            actions.pop()
+            next
+        
+        for node in problem.getSuccessors(consideredNode):
+            dataStructure.push(node)
+
+        consideredNode = dataStructure.pop()
+        
+        if consideredNode in closedSet:
+            dataStructure.pop()
+            next
+        else:
+            closedSet.push(consideredNode)
+
+        if consideredNode[nodeArcDirectionIndex] == "NORTH":
+            actions.append(n)
+        elif consideredNode[nodeArcDirectionIndex] == "SOUTH":
+            actions.append(s)
+        elif consideredNode[nodeArcDirectionIndex] == "WEST":
+            actions.append(w)
+        elif consideredNode[nodeArcDirectionIndex] == "EAST":
+            actions.append(e)
+        else:
+            raise Exception("Unrecognized expression for direction: " + consideredNode[nodeArcDirectionIndex])
+        
+    return actions
 
 def breadthFirstSearch(problem):
     """
@@ -114,3 +158,5 @@ bfs = breadthFirstSearch
 dfs = depthFirstSearch
 astar = aStarSearch
 ucs = uniformCostSearch
+
+
