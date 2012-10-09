@@ -82,7 +82,7 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
    
-    from Game import Directions
+    from game import Directions
 
     s = Directions.SOUTH
     w = Directions.WEST
@@ -93,12 +93,12 @@ def depthFirstSearch(problem):
     nodeArcDirectionIndex   = 1
     nodeArcCostIndex        = 2 
 
-    closedSet = set()
-    dataStructure = util.Stack()
-    actions = []
-    consideredNode = problem.startState()
+    closedSet           = set()
+    dataStructure       = util.Stack()
+    actions             = []
+    consideredNode      = problem.startState
     
-    while not problem.isGoalState(considerdNode) and not dataStructure.isEmpty():
+    while not problem.isGoalState(consideredNode) and not dataStructure.isEmpty():
         if not problem.getSuccessors(consideredNode):
             dataStructure.pop()
             actions.pop()
