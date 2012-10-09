@@ -117,13 +117,13 @@ def depthFirstSearch(problem):
         else:
             closedSet.add(consideredNode)
 
-        if consideredNode[nodeArcDirectionIndex] == "NORTH":
+        if consideredNode[nodeArcDirectionIndex] == "North":
             actions.append(n)
-        elif consideredNode[nodeArcDirectionIndex] == "SOUTH":
+        elif consideredNode[nodeArcDirectionIndex] == "South":
             actions.append(s)
-        elif consideredNode[nodeArcDirectionIndex] == "WEST":
+        elif consideredNode[nodeArcDirectionIndex] == "West":
             actions.append(w)
-        elif consideredNode[nodeArcDirectionIndex] == "EAST":
+        elif consideredNode[nodeArcDirectionIndex] == "East":
             actions.append(e)
         else:
             raise Exception("Unrecognized expression for direction: " + consideredNode[nodeArcDirectionIndex])
