@@ -156,6 +156,10 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
     A function that takes a problem and identifies if there is a solution to the pacman maze.  Returns
     a list of arcs if the solution does exist.
     """
+    
+    nodeLocationIndex       = 0
+    nodeArcDirectionIndex   = 1
+    nodeArcCostIndex        = 2 
      
     if problem is None:
         print "No Problem"
