@@ -89,9 +89,13 @@ def depthFirstSearch(problem):
     consideredNodeCoord = problem.startState
     dataStructure.push(consideredNodeCoord)
 
-    actions = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
+    result = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
     
+    if result is False:
+        raise Exception("No solution exists!")
+
     print "[Final Path] [%s]" % ", ".join(actions)  
+    raw_input("")
     return actions
 
 def breadthFirstSearch(problem):
@@ -131,22 +135,25 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), p
     nodeArcCostIndex        = 2 
 
     if problem is None:
-        print "No Node to Return"
-        return []
+        print "No Problem"
+        return False
 
     if problem.isGoalState(nodeCoordinates):
-        return path
+        print "[Success] Reached Goal State at (%s)" % (" ,".join(map(str, nodeCoordinates)))
+        return True
 
     if dataStructure.isEmpty():
-        return []    
+        print "[Backtrack] Empty Queue"
+        return False    
     
     successors = problem.getSuccessors(nodeCoordinates)
     if not successors:
-        path.pop()
-        return path
+        print "[Dead-end]" % (" ,".join(map(str, nodeCoordinates)))
+        return False
 
     nodesThisLevel = len(successors)
     for node in successors:
+        print "[Child] (%s), [Parent] (%s)" % (" ,".join(map(str, node[nodeLocationIndex])), " ,".join(map(str, nodeCoordinates)))
         dataStructure.push(node)
     
     while nodesThisLevel > 0: 
@@ -174,12 +181,15 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), p
         print "[Path State] [%s]" % (", ".join(map(str, path)))
 
         closedSet.add(destNode[nodeLocationIndex])
-        path = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
+        result = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
         
-        print "Returning Path [%s]" % (" ,".join(map(str, path)))
+        if result is True:
+            return True
+        else:
+            path.pop()
 
         nodesThisLevel -= 1
-    return path
+    return False
 
 # Abbreviations
 bfs = breadthFirstSearch
