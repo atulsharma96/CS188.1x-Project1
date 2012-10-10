@@ -89,13 +89,13 @@ def depthFirstSearch(problem):
     consideredNodeCoord = problem.startState
     dataStructure.push(consideredNodeCoord)
 
-    result = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
+    result = findSolution(problem, consideredNodeCoord, dataStructure, actions, closedSet)
     
     if result is False:
         raise Exception("No solution exists!")
 
-    print "[Final Path] [%s]" % ", ".join(actions)  
-    raw_input("")
+    print "[Final Path] [%s] with length %d" % (", ".join(actions), len(actions))  
+    
     return actions
 
 def breadthFirstSearch(problem):
@@ -122,7 +122,13 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), path=[], closedSet=None):
+def findSolution(problem=None, nodeCoordinates=(0,0), dataStructure=util.Stack(), path=[], closedSet=None):
+    """
+    A function that takes a problem and identifies if there is a solution to the pacman maze.  Returns
+    True if there exists a solution, False if not.  If there exists a solution, the path variable will
+    be filled
+    """
+    
     from game import Directions
 
     s = Directions.SOUTH
@@ -179,9 +185,11 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), p
      
         print "[Expanding] (%s)" % (", ".join(map(str, destNode[nodeLocationIndex]))) 
         print "[Path State] [%s]" % (", ".join(map(str, path)))
-
-        closedSet.add(destNode[nodeLocationIndex])
-        result = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
+        
+        if closedSet is not None:
+            closedSet.add(destNode[nodeLocationIndex])
+        
+        result = findSolution(problem, destNodeCord, dataStructure, path, closedSet)
         
         if result is True:
             return True
