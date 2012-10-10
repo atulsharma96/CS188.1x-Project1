@@ -84,51 +84,53 @@ def depthFirstSearch(problem):
    
     closedSet           = set()
     dataStructure       = util.Stack()
-    actions             = util.Stack()
+    path                = []
     
-    consideredNodeCoord = problem.startState
-    dataStructure.push((consideredNodeCoord, "", 0))
+    nodeCoordStartState = problem.startState
+    pathTuple = ((nodeCoordStartState, "", 0), )
+    dataStructure.push(pathTuple)
 
-    result = findSolution(problem, consideredNodeCoord, dataStructure, actions, closedSet)
+    result = findSolution(problem, pathTuple, dataStructure, closedSet)
     
-    if result is False:
+    if result is None:
         raise Exception("No solution exists!")
 
-    finalActions = []
-    while not actions.isEmpty():
-        finalActions.append(actions.pop())
+    for arc in result:
+        if arc[1] is not "":
+            path.append(arc[1])
 
-    finalActions.reverse()
-    print "[Final Path] [%s] with length %d" % (", ".join(finalActions), len(finalActions))  
+    print "[Final Path] [%s] with length %d" % (str(result), len(result))
     
-    return finalActions
+    return path
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-  
-    closedSet           = set() 
+ 
+    closedSet           = set()
     dataStructure       = util.Queue()
-    actions             = util.Queue()
+    path                = []
     
-    consideredNodeCoord = problem.startState
-    dataStructure.push((consideredNodeCoord, "", 0))
+    nodeCoordStartState = problem.startState
+    pathTuple = ((nodeCoordStartState, "", 0), )
+    dataStructure.push(pathTuple)
 
-    result = findSolution(problem, consideredNodeCoord, dataStructure, actions, closedSet)
+    result = findSolution(problem, pathTuple, dataStructure, closedSet)
     
-    if result is False:
+    if result is None:
         raise Exception("No solution exists!")
 
-    finalActions = []
-    while not actions.isEmpty():
-        finalActions.append(actions.pop())
+    for arc in result:
+        if arc[1] is not "":
+            path.append(arc[1])
 
-    print "[Final Path] [%s] with length %d" % (", ".join(finalActions), len(finalActions)) 
+    print "[Final Path] [%s] with length %d" % (str(result), len(result))
     
-    return finalActions 
-
+    return path
+ 
+    
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
@@ -146,7 +148,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
     util.raiseNotDefined()
 
-def findSolution(problem=None, nodeCoordinates=(0,0), dataStructure=util.Stack(), path=[], closedSet=None):
+def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.Stack(), closedSet=None):
     """
     A function that takes a problem and identifies if there is a solution to the pacman maze.  Returns
     True if there exists a solution, False if not.  If there exists a solution, the path variable will
@@ -164,30 +166,35 @@ def findSolution(problem=None, nodeCoordinates=(0,0), dataStructure=util.Stack()
     nodeArcDirectionIndex   = 1
     nodeArcCostIndex        = 2 
 
+    consideredNode = startNode[-1]
+    nodeCoordinates = consideredNode[nodeLocationIndex]     
+
     if problem is None:
         print "No Problem"
-        return False
+        return None
 
     if problem.isGoalState(nodeCoordinates):
         print "[Success] Reached Goal State at (%s)" % (" ,".join(map(str, nodeCoordinates)))
-        return True
+        return startNode
 
     if dataStructure.isEmpty():
         print "[Backtrack] Empty Queue"
-        return False    
+        return None   
     
     successors = problem.getSuccessors(nodeCoordinates)
     if not successors:
         print "[Dead-end]" % (" ,".join(map(str, nodeCoordinates)))
-        return False
+        return None
 
     nodesThisLevel = len(successors)
     for node in successors:
         print "[Child] (%s), [Parent] (%s)" % (" ,".join(map(str, node[nodeLocationIndex])), " ,".join(map(str, nodeCoordinates)))
-        dataStructure.push(node)
+        #This ensures that we retain the Tuple of Tuple Data Structure
+        dataStructure.push(tuple(list(startNode) + [node]))
     
     while nodesThisLevel > 0: 
-        destNode = dataStructure.pop()
+        destPath = dataStructure.pop()
+        destNode = destPath[-1]
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
 
@@ -195,20 +202,6 @@ def findSolution(problem=None, nodeCoordinates=(0,0), dataStructure=util.Stack()
             nodesThisLevel -= 1
             print "[Visited] (%s)" % (", ".join(map(str, destNodeCord)))
             continue
-
-        if consideredNodeDir == "North":
-            path.push(n)
-        elif consideredNodeDir == "South":
-            path.push(s)
-        elif consideredNodeDir == "West":
-            path.push(w)
-        elif consideredNodeDir == "East":
-            path.push(e)
-        elif consideredNodeDir == "":
-            print "[Start Node] Skipping considered Node"
-            continue
-        else:
-            raise Exception("Unrecognized expression for direction: " + str(consideredNodeDir))
      
         print "[Expanding] (%s)" % (", ".join(map(str, destNode[nodeLocationIndex]))) 
         #print "[Path State] [%s]" % (", ".join(map(str, path)))
@@ -216,15 +209,15 @@ def findSolution(problem=None, nodeCoordinates=(0,0), dataStructure=util.Stack()
         if closedSet is not None:
             closedSet.add(destNode[nodeLocationIndex])
         
-        result = findSolution(problem, destNodeCord, dataStructure, path, closedSet)
+        result = findSolution(problem, destPath, dataStructure, closedSet)
         
-        if result is True:
-            return True
-        else:
-            path.pop()
-
+        if result is not None:
+            return result
+        
         nodesThisLevel -= 1
-    return False
+    
+    print "[RETURN] False"
+    return None
 
 # Abbreviations
 bfs = breadthFirstSearch
