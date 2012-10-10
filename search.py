@@ -12,6 +12,7 @@ by Pacman agents (in searchAgents.py).
 """
 
 import util
+import sys
 
 class SearchProblem:
     """
@@ -81,7 +82,7 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-   
+  
     closedSet           = set()
     dataStructure       = util.Stack()
     path                = []
@@ -108,6 +109,8 @@ def breadthFirstSearch(problem):
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
+ 
+    import resource
  
     closedSet           = set()
     dataStructure       = util.Queue()
@@ -151,72 +154,49 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.Stack(), closedSet=None):
     """
     A function that takes a problem and identifies if there is a solution to the pacman maze.  Returns
-    True if there exists a solution, False if not.  If there exists a solution, the path variable will
-    be filled
+    a list of arcs if the solution does exist.
     """
-    
-    from game import Directions
-
-    s = Directions.SOUTH
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
-    
-    nodeLocationIndex       = 0
-    nodeArcDirectionIndex   = 1
-    nodeArcCostIndex        = 2 
-
-    consideredNode = startNode[-1]
-    nodeCoordinates = consideredNode[nodeLocationIndex]     
-
+     
     if problem is None:
         print "No Problem"
         return None
 
-    if problem.isGoalState(nodeCoordinates):
-        print "[Success] Reached Goal State at (%s)" % (" ,".join(map(str, nodeCoordinates)))
-        return startNode
-
     if dataStructure.isEmpty():
         print "[Backtrack] Empty Queue"
         return None   
-    
-    successors = problem.getSuccessors(nodeCoordinates)
-    if not successors:
-        print "[Dead-end]" % (" ,".join(map(str, nodeCoordinates)))
-        return None
 
-    nodesThisLevel = len(successors)
-    for node in successors:
-        print "[Child] (%s), [Parent] (%s)" % (" ,".join(map(str, node[nodeLocationIndex])), " ,".join(map(str, nodeCoordinates)))
-        #This ensures that we retain the Tuple of Tuple Data Structure
-        dataStructure.push(tuple(list(startNode) + [node]))
-    
-    while nodesThisLevel > 0: 
+    while not dataStructure.isEmpty():
+        #consideredNode = startNode[-1]
+        #nodeCoordinates = consideredNode[nodeLocationIndex]     
+
         destPath = dataStructure.pop()
         destNode = destPath[-1]
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
 
         if closedSet is not None and destNodeCord in closedSet:
-            nodesThisLevel -= 1
             print "[Visited] (%s)" % (", ".join(map(str, destNodeCord)))
             continue
      
-        print "[Expanding] (%s)" % (", ".join(map(str, destNode[nodeLocationIndex]))) 
-        #print "[Path State] [%s]" % (", ".join(map(str, path)))
-        
+        print "[Expanding] (%s)" % str(destPath) 
+                    
+        if problem.isGoalState(destNodeCord):
+            print "[Success] Reached Goal State at (%s)" % (" ,".join(map(str, destNodeCord)))
+            return destPath
+                
+        successors = problem.getSuccessors(destNodeCord)
+        if not successors:
+            print "[Dead-end]" % (" ,".join(map(str, destNodeCord)))
+            continue
+
+        nodesThisLevel = len(successors)
+        for node in successors:
+            print "[Child] (%s), [Parent] (%s)" % (" ,".join(map(str, node[nodeLocationIndex])), " ,".join(map(str, destNodeCord)))
+            dataStructure.push(tuple(list(destPath) + [node])) 
+
         if closedSet is not None:
             closedSet.add(destNode[nodeLocationIndex])
-        
-        result = findSolution(problem, destPath, dataStructure, closedSet)
-        
-        if result is not None:
-            return result
-        
-        nodesThisLevel -= 1
-    
-    print "[RETURN] False"
+
     return None
 
 # Abbreviations
