@@ -84,26 +84,50 @@ def depthFirstSearch(problem):
    
     closedSet           = set()
     dataStructure       = util.Stack()
-    actions             = []
+    actions             = util.Stack()
     
     consideredNodeCoord = problem.startState
-    dataStructure.push(consideredNodeCoord)
+    dataStructure.push((consideredNodeCoord, "", 0))
 
     result = findSolution(problem, consideredNodeCoord, dataStructure, actions, closedSet)
     
     if result is False:
         raise Exception("No solution exists!")
 
-    print "[Final Path] [%s] with length %d" % (", ".join(actions), len(actions))  
+    finalActions = []
+    while not actions.isEmpty():
+        finalActions.append(actions.pop())
+
+    finalActions.reverse()
+    print "[Final Path] [%s] with length %d" % (", ".join(finalActions), len(finalActions))  
     
-    return actions
+    return finalActions
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+  
+    closedSet           = set() 
+    dataStructure       = util.Queue()
+    actions             = util.Queue()
+    
+    consideredNodeCoord = problem.startState
+    dataStructure.push((consideredNodeCoord, "", 0))
+
+    result = findSolution(problem, consideredNodeCoord, dataStructure, actions, closedSet)
+    
+    if result is False:
+        raise Exception("No solution exists!")
+
+    finalActions = []
+    while not actions.isEmpty():
+        finalActions.append(actions.pop())
+
+    print "[Final Path] [%s] with length %d" % (", ".join(finalActions), len(finalActions)) 
+    
+    return finalActions 
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
@@ -173,18 +197,21 @@ def findSolution(problem=None, nodeCoordinates=(0,0), dataStructure=util.Stack()
             continue
 
         if consideredNodeDir == "North":
-            path.append(n)
+            path.push(n)
         elif consideredNodeDir == "South":
-            path.append(s)
+            path.push(s)
         elif consideredNodeDir == "West":
-            path.append(w)
+            path.push(w)
         elif consideredNodeDir == "East":
-            path.append(e)
+            path.push(e)
+        elif consideredNodeDir == "":
+            print "[Start Node] Skipping considered Node"
+            continue
         else:
-            raise Exception("Unrecognized expression for direction: " + consideredNodeDir)
+            raise Exception("Unrecognized expression for direction: " + str(consideredNodeDir))
      
         print "[Expanding] (%s)" % (", ".join(map(str, destNode[nodeLocationIndex]))) 
-        print "[Path State] [%s]" % (", ".join(map(str, path)))
+        #print "[Path State] [%s]" % (", ".join(map(str, path)))
         
         if closedSet is not None:
             closedSet.add(destNode[nodeLocationIndex])
