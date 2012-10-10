@@ -91,7 +91,7 @@ def depthFirstSearch(problem):
 
     actions = searchHelperFunction(problem, consideredNodeCoord, dataStructure, actions, closedSet)
     
-    print "The List of Actions: [%s]" % " ,".join(actions)  
+    print "[Final Path] [%s]" % ", ".join(actions)  
     return actions
 
 def breadthFirstSearch(problem):
@@ -131,6 +131,7 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), p
     nodeArcCostIndex        = 2 
 
     if problem is None:
+        print "No Node to Return"
         return []
 
     if problem.isGoalState(nodeCoordinates):
@@ -155,6 +156,7 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), p
 
         if closedSet is not None and destNodeCord in closedSet:
             nodesThisLevel -= 1
+            print "[Visited] (%s)" % (", ".join(map(str, destNodeCord)))
             continue
 
         if consideredNodeDir == "North":
@@ -168,11 +170,14 @@ def searchHelperFunction(problem, nodeCoordinates, dataStructure=util.Stack(), p
         else:
             raise Exception("Unrecognized expression for direction: " + consideredNodeDir)
      
-        print "Considering Node (%s)\n" % (" ,".join(map(str, destNode[nodeLocationIndex]))) 
+        print "[Expanding] (%s)" % (", ".join(map(str, destNode[nodeLocationIndex]))) 
+        print "[Path State] [%s]" % (", ".join(map(str, path)))
 
         closedSet.add(destNode[nodeLocationIndex])
         path = searchHelperFunction(problem, destNodeCord, dataStructure, path, closedSet)
         
+        print "Returning Path [%s]" % (" ,".join(map(str, path)))
+
         nodesThisLevel -= 1
     return path
 
