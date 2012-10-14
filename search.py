@@ -87,14 +87,19 @@ def depthFirstSearch(problem):
     dataStructure       = util.Stack()
     path                = []
     
-    if "startState" in dir(problem):
+    pathTuple = () 
+    if problem.__class__.__name__ is "CornersProblem":
+        nodeStartState = problem.getStartState()
+        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
+    elif "startState" in dir(problem):
         nodeCoordStartState = problem.startState
+        pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
         nodeCoordStartState = problem.getStartState()
+        pathTuple = ((nodeCoordStartState, "", 0), )
     else:
         raise Exception("No recognizable function for getting the Start State")
-
-    pathTuple = ((nodeCoordStartState, "", 0), )
+        
     dataStructure.push(pathTuple)
 
     result = findSolution(problem, pathTuple, dataStructure, closedSet)
@@ -115,15 +120,20 @@ def breadthFirstSearch(problem):
     closedSet           = set()
     dataStructure       = util.Queue()
     path                = []
-    
-    if "startState" in dir(problem):
+   
+    pathTuple = () 
+    if problem.__class__.__name__ is "CornersProblem":
+        nodeStartState = problem.getStartState()
+        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
+    elif "startState" in dir(problem):
         nodeCoordStartState = problem.startState
+        pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
         nodeCoordStartState = problem.getStartState()
+        pathTuple = ((nodeCoordStartState, "", 0), )
     else:
         raise Exception("No recognizable function for getting the Start State")
         
-    pathTuple = ((nodeCoordStartState, "", 0), )
     dataStructure.push(pathTuple)
 
     result = findSolution(problem, pathTuple, dataStructure, closedSet)
@@ -153,14 +163,19 @@ def uniformCostSearch(problem):
     dataStructure       = util.PriorityQueueWithFunction(lambda (path): problem.getCostOfActions(getListOfActions(path)))
     path                = []
     
-    if "startState" in dir(problem):
+    pathTuple = () 
+    if problem.__class__.__name__ is "CornersProblem":
+        nodeStartState = problem.getStartState()
+        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
+    elif "startState" in dir(problem):
         nodeCoordStartState = problem.startState
+        pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
         nodeCoordStartState = problem.getStartState()
+        pathTuple = ((nodeCoordStartState, "", 0), )
     else:
         raise Exception("No recognizable function for getting the Start State")
- 
-    pathTuple = ((nodeCoordStartState, "", 0), )
+
     dataStructure.push(pathTuple)
 
     result = findSolution(problem, pathTuple, dataStructure, closedSet)
@@ -186,15 +201,20 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     dataStructure       = util.PriorityQueueWithFunction(lambda (path): problem.getCostOfActions(getListOfActions(path))
                             + heuristic(path[-1][0], problem))
     path                = []
-    
-    if "startState" in dir(problem):
+   
+    pathTuple = () 
+    if problem.__class__.__name__ is "CornersProblem":
+        nodeStartState = problem.getStartState()
+        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
+    elif "startState" in dir(problem):
         nodeCoordStartState = problem.startState
+        pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
         nodeCoordStartState = problem.getStartState()
+        pathTuple = ((nodeCoordStartState, "", 0), )
     else:
         raise Exception("No recognizable function for getting the Start State")
- 
-    pathTuple = ((nodeCoordStartState, "", 0), )
+
     dataStructure.push(pathTuple)
 
     result = findSolution(problem, pathTuple, dataStructure, closedSet)
@@ -217,7 +237,8 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
     
     nodeLocationIndex       = 0
     nodeArcDirectionIndex   = 1
-    nodeArcCostIndex        = 2 
+    nodeArcCostIndex        = 2
+    problemStateIndex        = 3 
      
     if problem is None:
         print "No Problem"
@@ -232,20 +253,33 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
         destNode = destPath[-1]
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
+        problemState = None
+        try:
+            problemState = destNode[problemStateIndex]
+        except IndexError:
+            pass
 
-        if closedSet is not None and destNodeCord in closedSet:
-            print "[Visited] (%s)" % str(node) 
+        if closedSet is not None and (destNodeCord, problemState) in closedSet:
+            print "[Visited] (%s)" % str((destNodeCord, problemState)) 
             continue
      
         print "[Expanding] (%s)" % str(destPath) 
-                    
-        if problem.isGoalState(destNodeCord):
-            print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
-            return destPath
-                
-        successors = problem.getSuccessors(destNodeCord)
+        
+        if problemState is not None and problem.isGoalState(problemState): 
+                print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
+                return destPath
+        elif problemState is None and problem.isGoalState(destNodeCord):
+                print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
+                return destPath
+        
+        successors = ()
+        if problemState is not None:
+            successors = problem.getSuccessors((destNodeCord, problemState))
+        else:        
+            successors = problem.getSuccessors(destNodeCord)
+        
         if not successors:
-            print "[Dead-end]" % (" ,".join(map(str, destNodeCord)))
+            print "[Dead-end] %s" % str(destNodeCord)
             continue
 
         nodesThisLevel = len(successors)
@@ -254,7 +288,7 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
             dataStructure.push(tuple(list(destPath) + [node])) 
 
         if closedSet is not None:
-            closedSet.add(destNode[nodeLocationIndex])
+            closedSet.add((destNodeCord, problemState))
 
     return None
 
