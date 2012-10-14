@@ -87,7 +87,13 @@ def depthFirstSearch(problem):
     dataStructure       = util.Stack()
     path                = []
     
-    nodeCoordStartState = problem.startState
+    if "startState" in dir(problem):
+        nodeCoordStartState = problem.startState
+    elif "getStartState" in dir(problem):
+        nodeCoordStartState = problem.getStartState()
+    else:
+        raise Exception("No recognizable function for getting the Start State")
+
     pathTuple = ((nodeCoordStartState, "", 0), )
     dataStructure.push(pathTuple)
 
@@ -113,7 +119,13 @@ def breadthFirstSearch(problem):
     dataStructure       = util.Queue()
     path                = []
     
-    nodeCoordStartState = problem.startState
+    if "startState" in dir(problem):
+        nodeCoordStartState = problem.startState
+    elif "getStartState" in dir(problem):
+        nodeCoordStartState = problem.getStartState()
+    else:
+        raise Exception("No recognizable function for getting the Start State")
+        
     pathTuple = ((nodeCoordStartState, "", 0), )
     dataStructure.push(pathTuple)
 
@@ -147,7 +159,13 @@ def uniformCostSearch(problem):
     dataStructure       = util.PriorityQueueWithFunction(getPriority)
     path                = []
     
-    nodeCoordStartState = problem.startState
+    if "startState" in dir(problem):
+        nodeCoordStartState = problem.startState
+    elif "getStartState" in dir(problem):
+        nodeCoordStartState = problem.getStartState()
+    else:
+        raise Exception("No recognizable function for getting the Start State")
+ 
     pathTuple = ((nodeCoordStartState, "", 0), )
     dataStructure.push(pathTuple)
 
@@ -195,22 +213,19 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
         return None   
 
     while not dataStructure.isEmpty():
-        #consideredNode = startNode[-1]
-        #nodeCoordinates = consideredNode[nodeLocationIndex]     
-
         destPath = dataStructure.pop()
         destNode = destPath[-1]
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
 
         if closedSet is not None and destNodeCord in closedSet:
-            print "[Visited] (%s)" % (", ".join(map(str, destNodeCord)))
+            print "[Visited] (%s)" % str(node) 
             continue
      
         print "[Expanding] (%s)" % str(destPath) 
                     
         if problem.isGoalState(destNodeCord):
-            print "[Success] Reached Goal State at (%s)" % (" ,".join(map(str, destNodeCord)))
+            print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
             return destPath
                 
         successors = problem.getSuccessors(destNodeCord)
@@ -220,7 +235,7 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
 
         nodesThisLevel = len(successors)
         for node in successors:
-            print "[Child] (%s), [Parent] (%s)" % (" ,".join(map(str, node[nodeLocationIndex])), " ,".join(map(str, destNodeCord)))
+            print "[Child] (%s), [Parent] (%s)" % (str(node), str(destNode))
             dataStructure.push(tuple(list(destPath) + [node])) 
 
         if closedSet is not None:
