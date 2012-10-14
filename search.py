@@ -182,9 +182,32 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    "Search the node that has the lowest combined cost and heuristic first."
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    closedSet           = set()
+    dataStructure       = util.PriorityQueueWithFunction(lambda (path): problem.getCostOfActions(getListOfActions(path))
+                            + heuristic(path[-1][0], problem))
+    path                = []
+    
+    if "startState" in dir(problem):
+        nodeCoordStartState = problem.startState
+    elif "getStartState" in dir(problem):
+        nodeCoordStartState = problem.getStartState()
+    else:
+        raise Exception("No recognizable function for getting the Start State")
+ 
+    pathTuple = ((nodeCoordStartState, "", 0), )
+    dataStructure.push(pathTuple)
+
+    result = findSolution(problem, pathTuple, dataStructure, closedSet)
+    
+    if result is None:
+        raise Exception("No solution exists!")
+  
+    path = getListOfActions(result)
+
+    print "[Final Path] [%s] with length %d" % (str(result), len(result))
+
+    return path 
+
 
 def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.Stack(), closedSet=None):
     """
