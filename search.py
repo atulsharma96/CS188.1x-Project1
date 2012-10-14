@@ -109,9 +109,6 @@ def breadthFirstSearch(problem):
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
- 
-    import resource
- 
     closedSet           = set()
     dataStructure       = util.Queue()
     path                = []
@@ -132,12 +129,40 @@ def breadthFirstSearch(problem):
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
     
     return path
- 
+
+def getPriority(path):
+    "Returns the priority of the destination on the path"
+    nodeLocationIndex       = 0
+    nodeArcDirectionIndex   = 1
+    nodeArcCostIndex        = 2 
+    
+    node = path[-1]
+    return node[nodeArcCostIndex]
     
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    
+    closedSet           = set()
+    dataStructure       = util.PriorityQueueWithFunction(getPriority)
+    path                = []
+    
+    nodeCoordStartState = problem.startState
+    pathTuple = ((nodeCoordStartState, "", 0), )
+    dataStructure.push(pathTuple)
+
+    result = findSolution(problem, pathTuple, dataStructure, closedSet)
+    
+    if result is None:
+        raise Exception("No solution exists!")
+
+    for arc in result:
+        if arc[1] is not "":
+            path.append(arc[1])
+
+    print "[Final Path] [%s] with length %d" % (str(result), len(result))
+
+    return path 
 
 def nullHeuristic(state, problem=None):
     """
