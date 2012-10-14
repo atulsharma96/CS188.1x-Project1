@@ -102,10 +102,7 @@ def depthFirstSearch(problem):
     if result is None:
         raise Exception("No solution exists!")
 
-    for arc in result:
-        if arc[1] is not "":
-            path.append(arc[1])
-
+    path = getListOfActions(result)
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
     
     return path
@@ -133,30 +130,27 @@ def breadthFirstSearch(problem):
     
     if result is None:
         raise Exception("No solution exists!")
-
-    for arc in result:
-        if arc[1] is not "":
-            path.append(arc[1])
+    
+    path = getListOfActions(result)
 
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
     
     return path
 
-def getPriority(path):
-    "Returns the priority of the destination on the path"
-    nodeLocationIndex       = 0
-    nodeArcDirectionIndex   = 1
-    nodeArcCostIndex        = 2 
-    
-    node = path[-1]
-    return node[nodeArcCostIndex]
-    
+def getListOfActions(path):
+    pathList = []
+    for arc in path:
+        if arc[1] is not "":
+            pathList.append(arc[1])
+
+    return pathList
+     
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
     
     closedSet           = set()
-    dataStructure       = util.PriorityQueueWithFunction(getPriority)
+    dataStructure       = util.PriorityQueueWithFunction(lambda (path): problem.getCostOfActions(getListOfActions(path)))
     path                = []
     
     if "startState" in dir(problem):
@@ -173,10 +167,8 @@ def uniformCostSearch(problem):
     
     if result is None:
         raise Exception("No solution exists!")
-
-    for arc in result:
-        if arc[1] is not "":
-            path.append(arc[1])
+  
+    path = getListOfActions(result)
 
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
 
