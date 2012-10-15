@@ -337,7 +337,6 @@ class CornersProblem(search.SearchProblem):
         # Bookkeeping for display purposes
         self._expanded += 1
         
-
         return successors 
 
     def getCostOfActions(self, actions):
@@ -519,9 +518,9 @@ class ClosestDotSearchAgent(SearchAgent):
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
+        search.uniformCostSearch(problem) 
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -545,20 +544,63 @@ class AnyFoodSearchProblem(PositionSearchProblem):
 
         # Store info for the PositionSearchProblem (no need to change this)
         self.walls = gameState.getWalls()
-        self.startState = gameState.getPacmanPosition()
+        self.startState = (gameState.getPacmanPosition()[0], gameState.getPacmanPosition()[1], tuple(self.food.asList()))
         self.costFn = lambda x: 1
         self._visited, self._visitedlist, self._expanded = {}, [], 0
 
+    def getStartState(self):
+        return (self.startState[0], self.startState[1], tuple(self.food.asList()))
+    
     def isGoalState(self, state):
         """
         The state is Pacman's position. Fill this in with a goal test
         that will complete the problem definition.
         """
-        x,y = state
+        if len(state[2]) == 0:
+            return True
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return False
 
+    def getCostOfActions(self, actions):
+        """
+        Returns the cost of a particular sequence of actions.  If those actions
+        include an illegal move, return 999999
+        """
+        if actions == None: return 999999
+        x,y,food= self.getStartState()
+        cost = 0
+        for action in actions:
+            # Check figure out the next state and see whether its' legal
+            dx, dy = Actions.directionToVector(action)
+            x, y = int(x + dx), int(y + dy)
+            if self.walls[x][y]: return 999999
+            cost += self.costFn((x,y))
+        return cost
+
+    def getSuccessors(self, state): 
+        successors = []
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            x = state[0]
+            y = state[1]
+            goalState = state[2]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                nextState = (nextx, nexty)
+                newGoalState = []
+                for cord in goalState: 
+                    if nextState is not cord:
+                        newGoalState.append(cord)
+                  
+                newGoalState = tuple(newGoalState)                        
+                cost = 1
+                successors.append(((nextState[0], nextState[1], newGoalState), action, cost))
+
+        # Bookkeeping for display purposes
+        self._expanded += 1
+        
+        return successors 
+        
 ##################
 # Mini-contest 1 #
 ##################
