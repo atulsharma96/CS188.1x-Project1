@@ -474,7 +474,7 @@ def foodHeuristic(state, problem):
     Grid (see game.py) of either True or False. You can call foodGrid.asList()
     to get a list of food coordinates instead.
 
-    If you want access to info like walls, capsules, etc., you can query the problem.
+    If ydou want access to info like walls, capsules, etc., you can query the problem.
     For example, problem.walls gives you a Grid of where the walls are.
 
     If you want to *store* information to be reused in other calls to the heuristic,
@@ -484,8 +484,16 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    #closestDistance = 9999999999
+    #for foodCord in foodGrid.asList():        
+    #    xy1 = foodCord
+    #    xy2 = position
+    #    distance = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+    #    
+    #    if distance < closestDistance:
+    #        closestDistance = distance 
+
+    return len(foodGrid.asList())
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

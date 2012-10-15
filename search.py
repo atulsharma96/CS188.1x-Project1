@@ -189,7 +189,7 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def getFn(gN, hN):
-    print "F(n): %d G(n) %d H(n) %d" % (gN + hN, gN, hN)
+    #print "F(n): %d G(n) %d H(n) %d" % (gN + hN, gN, hN)
     return gN + hN
 
 def getHeuristicFunction(problem, heuristic): 
