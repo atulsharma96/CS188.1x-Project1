@@ -247,7 +247,7 @@ def manhattanHeuristic(position, problem, info={}):
 
 def euclideanHeuristic(position, problem, info={}):
     "The Euclidean distance heuristic for a PositionSearchProblem"
-    xy1 = position
+    xy1 = position[-1][0]
     xy2 = problem.goal
     return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
@@ -353,7 +353,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
-def cornersHeuristic(state, problem):
+def cornersHeuristic(state, problem, info={}):
     """
     A heuristic for the CornersProblem that you defined.
 
@@ -369,13 +369,16 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     
-    numberOfDotsRemaining = 0
-    stateOfCorners = state[2]
-    for corner in stateOfCorners:
-        if corner[1] is True:
-            numberOfDotsRemaining += 1
+    if info == None or info == {}:
+        return corners
+    else:
+        numberOfDotsRemaining = 0
+        stateOfCorners = info[-1][-1]
+        
+        for corner in stateOfCorners:
+            if corner[1] is True:
+                numberOfDotsRemaining += 1
 
-    "*** YOUR CODE HERE ***"
     return numberOfDotsRemaining # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):

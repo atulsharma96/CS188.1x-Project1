@@ -194,14 +194,14 @@ def nullHeuristic(state, problem=None):
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
+
     return 0
 
 def getHeuristicFunction(problem, heuristic):
     if problem.__class__.__name__ is "CornersProblem":
-        return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic((path[-1][0][0], path[-1][0][1], path[-1][3]), problem)
-    else:
-        return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic(path[-1][0], problem)
-
+        return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic(path[-1][0], problem, path)
+    return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic(path[-1][0], problem)
+   
 def aStarSearch(problem, heuristic=nullHeuristic):
     closedSet           = set()
     dataStructure       = util.PriorityQueueWithFunction(getHeuristicFunction(problem, heuristic))
