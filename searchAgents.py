@@ -335,9 +335,7 @@ class CornersProblem(search.SearchProblem):
 
         # Bookkeeping for display purposes
         self._expanded += 1
-        if state not in self._visited:
-            self._visited[state] = True
-            self._visitedlist.append(state)
+        
 
         return successors 
 
@@ -370,9 +368,15 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    
+    numberOfDotsRemaining = 0
+    stateOfCorners = state[2]
+    for corner in stateOfCorners:
+        if corner[1] is True:
+            numberOfDotsRemaining += 1
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    return numberOfDotsRemaining # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"

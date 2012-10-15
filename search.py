@@ -109,7 +109,7 @@ def depthFirstSearch(problem):
 
     path = getListOfActions(result)
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
-    
+    print "Path: %s with length %d" % (str(path), len(path)) 
     return path
 
 def breadthFirstSearch(problem):
@@ -144,7 +144,7 @@ def breadthFirstSearch(problem):
     path = getListOfActions(result)
 
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
-    
+    print "Path: %s with length %d" % (str(path), len(path)) 
     return path
 
 def getListOfActions(path):
@@ -186,7 +186,7 @@ def uniformCostSearch(problem):
     path = getListOfActions(result)
 
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
-
+    print "Path: %s with length %d" % (str(path), len(path)) 
     return path 
 
 def nullHeuristic(state, problem=None):
@@ -196,10 +196,15 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
+def getHeuristicFunction(problem, heuristic):
+    if problem.__class__.__name__ is "CornersProblem":
+        return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic((path[-1][0][0], path[-1][0][1], path[-1][3]), problem)
+    else:
+        return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic(path[-1][0], problem)
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     closedSet           = set()
-    dataStructure       = util.PriorityQueueWithFunction(lambda (path): problem.getCostOfActions(getListOfActions(path))
-                            + heuristic(path[-1][0], problem))
+    dataStructure       = util.PriorityQueueWithFunction(getHeuristicFunction(problem, heuristic))
     path                = []
    
     pathTuple = () 
@@ -225,7 +230,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     path = getListOfActions(result)
 
     print "[Final Path] [%s] with length %d" % (str(result), len(result))
-
+    print "Path: %s with length %d" % (str(path), len(path)) 
     return path 
 
 
@@ -266,11 +271,11 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
         print "[Expanding] (%s)" % str(destPath) 
         
         if problemState is not None and problem.isGoalState(problemState): 
-                print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
-                return destPath
+            print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
+            return destPath
         elif problemState is None and problem.isGoalState(destNodeCord):
-                print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
-                return destPath
+            print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
+            return destPath
         
         successors = ()
         if problemState is not None:
