@@ -289,12 +289,12 @@ class CornersProblem(search.SearchProblem):
     def getStartState(self):
         "Returns the start state (in your state space, not the full Pacman state space)"
         "*** YOUR CODE HERE ***"
-        return (self.startingPosition, self.cornersStartState)
+        return (self.startingPosition[0], self.startingPosition[1], self.cornersStartState)
         
     def isGoalState(self, state):
         "Returns whether this search state is a goal state of the problem"
         "*** YOUR CODE HERE ***"
-        for corner in state:
+        for corner in state[2]:
             dotExists = corner[1]
             if dotExists is True:
                 return False
@@ -314,8 +314,9 @@ class CornersProblem(search.SearchProblem):
 
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            x,y = state[0]
-            goalState = state[1]
+            x = state[0]
+            y = state[1]
+            goalState = state[2]
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
@@ -331,7 +332,7 @@ class CornersProblem(search.SearchProblem):
                 
                 newGoalState = tuple(newGoalState)                        
                 cost = 1
-                successors.append((nextState, action, cost, newGoalState))
+                successors.append(((nextState[0], nextState[1], newGoalState), action, cost))
 
         # Bookkeeping for display purposes
         self._expanded += 1
@@ -353,7 +354,7 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
-def cornersHeuristic(state, problem, info={}):
+def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
 
@@ -369,15 +370,11 @@ def cornersHeuristic(state, problem, info={}):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     
-    if info == None or info == {}:
-        return corners
-    else:
-        numberOfDotsRemaining = 0
-        stateOfCorners = info[-1][-1]
-        
-        for corner in stateOfCorners:
-            if corner[1] is True:
-                numberOfDotsRemaining += 1
+    stateOfCorners = state[2]
+    numberOfDotsRemaining = 0    
+    for corner in stateOfCorners:
+        if corner[1] is True:
+            numberOfDotsRemaining += 1
 
     return numberOfDotsRemaining # Default to trivial solution
 

@@ -88,10 +88,7 @@ def depthFirstSearch(problem):
     path                = []
     
     pathTuple = () 
-    if problem.__class__.__name__ is "CornersProblem":
-        nodeStartState = problem.getStartState()
-        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
-    elif "startState" in dir(problem):
+    if "startState" in dir(problem):
         nodeCoordStartState = problem.startState
         pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
@@ -122,10 +119,7 @@ def breadthFirstSearch(problem):
     path                = []
    
     pathTuple = () 
-    if problem.__class__.__name__ is "CornersProblem":
-        nodeStartState = problem.getStartState()
-        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
-    elif "startState" in dir(problem):
+    if "startState" in dir(problem):
         nodeCoordStartState = problem.startState
         pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
@@ -164,10 +158,7 @@ def uniformCostSearch(problem):
     path                = []
     
     pathTuple = () 
-    if problem.__class__.__name__ is "CornersProblem":
-        nodeStartState = problem.getStartState()
-        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
-    elif "startState" in dir(problem):
+    if "startState" in dir(problem):
         nodeCoordStartState = problem.startState
         pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
@@ -197,9 +188,7 @@ def nullHeuristic(state, problem=None):
 
     return 0
 
-def getHeuristicFunction(problem, heuristic):
-    if problem.__class__.__name__ is "CornersProblem":
-        return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic(path[-1][0], problem, path)
+def getHeuristicFunction(problem, heuristic): 
     return lambda (path): problem.getCostOfActions(getListOfActions(path)) + heuristic(path[-1][0], problem)
    
 def aStarSearch(problem, heuristic=nullHeuristic):
@@ -208,10 +197,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     path                = []
    
     pathTuple = () 
-    if problem.__class__.__name__ is "CornersProblem":
-        nodeStartState = problem.getStartState()
-        pathTuple = ((nodeStartState[0], "", 0, nodeStartState[1]), )
-    elif "startState" in dir(problem):
+    if "startState" in dir(problem):
         nodeCoordStartState = problem.startState
         pathTuple = ((nodeCoordStartState, "", 0), )
     elif "getStartState" in dir(problem):
@@ -259,13 +245,9 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
         destNodeCord = destNode[nodeLocationIndex]
         consideredNodeDir = destNode[nodeArcDirectionIndex]
         problemState = None
-        try:
-            problemState = destNode[problemStateIndex]
-        except IndexError:
-            pass
 
-        if closedSet is not None and (destNodeCord, problemState) in closedSet:
-            print "[Visited] (%s)" % str((destNodeCord, problemState)) 
+        if closedSet is not None and destNodeCord in closedSet:
+            print "[Visited] (%s)" % str(destNodeCord)
             continue
      
         print "[Expanding] (%s)" % str(destPath) 
@@ -278,10 +260,7 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
             return destPath
         
         successors = ()
-        if problemState is not None:
-            successors = problem.getSuccessors((destNodeCord, problemState))
-        else:        
-            successors = problem.getSuccessors(destNodeCord)
+        successors = problem.getSuccessors(destNodeCord)
         
         if not successors:
             print "[Dead-end] %s" % str(destNodeCord)
@@ -293,7 +272,7 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
             dataStructure.push(tuple(list(destPath) + [node])) 
 
         if closedSet is not None:
-            closedSet.add((destNodeCord, problemState))
+            closedSet.add(destNodeCord)
 
     return None
 
