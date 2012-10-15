@@ -370,7 +370,7 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     
     stateOfCorners = state[2]
-    closestDistance = 9999999999 
+    closestDistance = 0 
     dotExistsCounter = 0 
     for corner in stateOfCorners:
         dotExists = corner[1]
@@ -384,14 +384,11 @@ def cornersHeuristic(state, problem):
         xy2 = state[0], state[1]
         distance = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
         
-        if distance < closestDistance:
+        if distance > closestDistance:
             closestDistance = distance 
 
     if dotExistsCounter == len(corners):
         return 0
-
-    if closestDistance == 9999999999:
-        foo = 3
 
     return closestDistance 
 
@@ -483,16 +480,16 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    #closestDistance = 9999999999
-    #for foodCord in foodGrid.asList():        
-    #    xy1 = foodCord
-    #    xy2 = position
-    #    distance = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
-    #    
-    #    if distance < closestDistance:
-    #        closestDistance = distance 
+    closestDistance = 0
+    for foodCord in foodGrid.asList():        
+       xy1 = foodCord
+       xy2 = position
+       distance = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+       
+       if distance > closestDistance:
+           closestDistance = distance 
 
-    return len(foodGrid.asList())
+    return closestDistance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -518,7 +515,7 @@ class ClosestDotSearchAgent(SearchAgent):
         food = gameState.getFood()
         walls = gameState.getWalls()
         problem = AnyFoodSearchProblem(gameState)
-        search.uniformCostSearch(problem) 
+        #return search.uniformCostSearch(problem) 
 
         
 
@@ -547,19 +544,54 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         self.startState = (gameState.getPacmanPosition()[0], gameState.getPacmanPosition()[1], tuple(self.food.asList()))
         self.costFn = lambda x: 1
         self._visited, self._visitedlist, self._expanded = {}, [], 0
-
-    def getStartState(self):
-        return (self.startState[0], self.startState[1], tuple(self.food.asList()))
     
     def isGoalState(self, state):
         """
         The state is Pacman's position. Fill this in with a goal test
         that will complete the problem definition.
         """
-        if len(state[2]) == 0:
-            return True
+        x,y = state[0],state[1]
+        #print "Length of Goal %d" % len(state[2])
+        return state[2][x] == (x,y)
+        
+    def getStartState(self):
+        return self.startState
 
-        return False
+    def getSuccessors(self, state):
+        """
+        Returns successor states, the actions they require, and a cost of 1.
+
+         As noted in search.py:
+             For a given state, this should return a list of triples,
+         (successor, action, stepCost), where 'successor' is a
+         successor to the current state, 'action' is the action
+         required to get there, and 'stepCost' is the incremental
+         cost of expanding to that successor
+        """
+
+        successors = []
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            x,y = state[0],state[1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                nextState = (nextx, nexty)
+                newGrid = []
+                for dot in state[2]:
+                  if dot == nextState:
+                     newGrid.append(dot)
+                
+                newGrid = tuple(newGrid)
+                cost = self.costFn(nextState)
+                successors.append( ( (nextState[0], nextState[1], newGrid), action, cost) )
+
+        # Bookkeeping for display purposes
+        self._expanded += 1
+        if state not in self._visited:
+            self._visited[state] = True
+            self._visitedlist.append(state)
+
+        return successors
 
     def getCostOfActions(self, actions):
         """
@@ -567,7 +599,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         include an illegal move, return 999999
         """
         if actions == None: return 999999
-        x,y,food= self.getStartState()
+        x,y= self.getStartState()[0], self.getStartState()[1]
         cost = 0
         for action in actions:
             # Check figure out the next state and see whether its' legal
@@ -576,30 +608,6 @@ class AnyFoodSearchProblem(PositionSearchProblem):
             if self.walls[x][y]: return 999999
             cost += self.costFn((x,y))
         return cost
-
-    def getSuccessors(self, state): 
-        successors = []
-        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            x = state[0]
-            y = state[1]
-            goalState = state[2]
-            dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
-            if not self.walls[nextx][nexty]:
-                nextState = (nextx, nexty)
-                newGoalState = []
-                for cord in goalState: 
-                    if nextState is not cord:
-                        newGoalState.append(cord)
-                  
-                newGoalState = tuple(newGoalState)                        
-                cost = 1
-                successors.append(((nextState[0], nextState[1], newGoalState), action, cost))
-
-        # Bookkeeping for display purposes
-        self._expanded += 1
-        
-        return successors 
         
 ##################
 # Mini-contest 1 #

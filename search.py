@@ -77,9 +77,9 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    #print "Start:", problem.getStartState()
+    #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
   
@@ -105,8 +105,8 @@ def depthFirstSearch(problem):
         raise Exception("No solution exists!")
 
     path = getListOfActions(result)
-    print "[Final Path] [%s] with length %d" % (str(result), len(result))
-    print "Path: %s with length %d" % (str(path), len(path)) 
+    #print "[Final Path] [%s] with length %d" % (str(result), len(result))
+    #print "Path: %s with length %d" % (str(path), len(path)) 
     return path
 
 def breadthFirstSearch(problem):
@@ -137,8 +137,8 @@ def breadthFirstSearch(problem):
     
     path = getListOfActions(result)
 
-    print "[Final Path] [%s] with length %d" % (str(result), len(result))
-    print "Path: %s with length %d" % (str(path), len(path)) 
+    #print "[Final Path] [%s] with length %d" % (str(result), len(result))
+    #print "Path: %s with length %d" % (str(path), len(path)) 
     return path
 
 def getListOfActions(path):
@@ -176,8 +176,8 @@ def uniformCostSearch(problem):
   
     path = getListOfActions(result)
 
-    print "[Final Path] [%s] with length %d" % (str(result), len(result))
-    print "Path: %s with length %d" % (str(path), len(path)) 
+    #print "[Final Path] [%s] with length %d" % (str(result), len(result))
+    #print "Path: %s with length %d" % (str(path), len(path)) 
     return path 
 
 def nullHeuristic(state, problem=None):
@@ -189,7 +189,7 @@ def nullHeuristic(state, problem=None):
     return 0
 
 def getFn(gN, hN):
-    print "F(n): %d G(n) %d H(n) %d" % (gN + hN, gN, hN)
+    #print "F(n): %d G(n) %d H(n) %d" % (gN + hN, gN, hN)
     return gN + hN
 
 def getHeuristicFunction(problem, heuristic): 
@@ -219,8 +219,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   
     path = getListOfActions(result)
 
-    print "[Final Path] [%s] with length %d" % (str(result), len(result))
-    print "Path: %s with length %d" % (str(path), len(path)) 
+    #print "[Final Path] [%s] with length %d" % (str(result), len(result))
+    #print "Path: %s with length %d" % (str(path), len(path)) 
     return path 
 
 
@@ -236,11 +236,11 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
     problemStateIndex        = 3 
      
     if problem is None:
-        print "No Problem"
+        #print "No Problem"
         return None
 
     if dataStructure.isEmpty():
-        print "[Backtrack] Empty Queue"
+        #print "[Backtrack] Empty Queue"
         return None   
 
     while not dataStructure.isEmpty():
@@ -251,13 +251,13 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
         problemState = None
 
         if closedSet is not None and destNodeCord in closedSet:
-            print "[Visited] (%s)" % str(destNodeCord)
+            #print "[Visited] (%s)" % str(destNodeCord)
             continue
      
-        print "[Expanding] (%s)" % str(destPath) 
+        #print "[Expanding] (%s)" % str(destPath) 
         
         if problemState is not None and problem.isGoalState(problemState): 
-            print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
+            #print "[Success] Reached Goal State at (%s)" % str(destNodeCord)
             return destPath
         elif problemState is None and problem.isGoalState(destNodeCord):
             return destPath
@@ -266,12 +266,12 @@ def findSolution(problem=None, startNode=(((0,0), "", 0)), dataStructure=util.St
         successors = problem.getSuccessors(destNodeCord)
         
         if not successors:
-            print "[Dead-end] %s" % str(destNodeCord)
+            #print "[Dead-end] %s" % str(destNodeCord)
             continue
 
         nodesThisLevel = len(successors)
         for node in successors:
-            print "[Child] (%s), [Parent] (%s)" % (str(node), str(destNode))
+            #print "[Child] (%s), [Parent] (%s)" % (str(node), str(destNode))
             dataStructure.push(tuple(list(destPath) + [node])) 
 
         if closedSet is not None:
