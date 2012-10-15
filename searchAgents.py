@@ -371,21 +371,29 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     
     stateOfCorners = state[2]
-    closestDistance = 9999999    
+    closestDistance = 9999999999 
+    dotExistsCounter = 0 
     for corner in stateOfCorners:
         dotExists = corner[1]
         dotCoord = corner[0]
 
         if not dotExists:
-            return False
+            dotExistsCounter += 1
+            continue
         
         xy1 = dotCoord
         xy2 = state[0], state[1]
         distance = abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
         
         if distance < closestDistance:
-            distance = closestDistance
-       
+            closestDistance = distance 
+
+    if dotExistsCounter == len(corners):
+        return 0
+
+    if closestDistance == 9999999999:
+        foo = 3
+
     return closestDistance 
 
 class AStarCornersAgent(SearchAgent):
